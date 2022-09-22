@@ -10,4 +10,9 @@ class Kelas extends Model
     use HasFactory;
 
     protected $connection = 'mongodb';
+
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class, 'kelas_id', '_id');
+    }
 }

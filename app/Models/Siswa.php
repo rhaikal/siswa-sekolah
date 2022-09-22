@@ -8,4 +8,9 @@ class Siswa extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'siswa';
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
 }

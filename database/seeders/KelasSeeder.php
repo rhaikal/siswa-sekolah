@@ -23,7 +23,6 @@ class KelasSeeder extends Seeder
             $fasilitas_kelas = Arr::random($fasilitas, rand(1, 4));
             $semester_awal = rand(2000, 2020);
             DB::collection('kelas')->insert([
-                '_id' => fake()->uuid(),
                 'jurusan' => $jurusan[rand(0,3)],
                 'tahun_ajar' => [$semester_awal, ($semester_awal+3)],
                 'ruang' => [

@@ -26,7 +26,6 @@ class MapelSeeder extends Seeder
             }
 
             DB::collection('mapel')->insert([
-                '_id' => fake()->uuid(), 
                 'nama' => $nama[$i], 
                 'slug' => $slug[$i],
                 'guru' => $guru,
