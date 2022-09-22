@@ -11,7 +11,7 @@ class Kelas extends Model
 
     protected $connection = 'mongodb';
 
-    public function siswa()
+    public function detailSiswa()
     {
         return $this->hasMany(Siswa::class, 'kelas_id', '_id');
     }
