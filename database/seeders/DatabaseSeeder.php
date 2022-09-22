@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MapelSeeder::class,
             KelasSeeder::class,
-            SiswaSeeder::class
+            SiswaSeeder::class,
+            NilaiSeeder::class
         ]);
     }
 }

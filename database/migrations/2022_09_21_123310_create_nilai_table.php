@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('nilai_mapel', function (Blueprint $table) {
+        Schema::create('nilai', function (Blueprint $table) {
             $table->index('_id');
         });
     }

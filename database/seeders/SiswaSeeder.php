@@ -39,6 +39,11 @@ class SiswaSeeder extends Seeder
                     'agama' => $agama[rand(0, 5)],
                     'alamat' => fake()->address(),
                     'foto' => fake()->imageUrl(360, 360, 'person', true, 'siswa', true, 'jpg'),
+                    'penilaian' => [
+                        '10' => null,
+                        '11' => null,
+                        '12' => null
+                    ]
                 ]);
                 
                 DB::collection('kelas')->where('_id', $kelas->_id)->push('siswa', ["_id" => $siswa_id, 'nama' => $nama_siswa]);
