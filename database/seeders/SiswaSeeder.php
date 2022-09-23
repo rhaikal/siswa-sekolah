@@ -45,8 +45,9 @@ class SiswaSeeder extends Seeder
                         '12' => null
                     ]
                 ]);
+                $siswa_id = (String)$siswa_id;
                 
-                DB::collection('kelas')->where('_id', $kelas->_id)->push('siswa', ["_id" => $siswa_id, 'nama' => $nama_siswa]);
+                DB::collection('kelas')->where('_id', $kelas->_id)->push('siswa', ["siswa_id" => $siswa_id, 'nama' => $nama_siswa]);
             }
         }
     }
