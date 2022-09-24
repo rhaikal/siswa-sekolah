@@ -29,16 +29,10 @@ class NilaiSeeder extends Seeder
                     'nama_mapel' => $mapel->nama,
                     'siswa_id' => $siswa->_id,
                     'nama_siswa' => $siswa->nama,
-                    'tingkat_kelas' => [
-                        '10' => null,
-                        '11' => null,
-                        '12' => null
-                    ]
                 ]);
                 
-                $tingkat_kelas = $siswa->kelas['tingkat'];
-                $loop = ($tingkat_kelas == 12 ? 1 : ($tingkat_kelas == 11 ? 2 : 3));
-                for ($i=0; $i < $loop; $i++) {     
+                $semester_kelas = $siswa->kelas['semester'];
+                for ($i=0; $i < $semester_kelas; $i++) {     
                     $nilai = Nilai::where('_id', '=', $nilai_id)->first();
 
                     $latihan_soal = [];
@@ -53,18 +47,20 @@ class NilaiSeeder extends Seeder
                     $uts = rand(70,100);
                     $us = rand(70, 100);
 
-                    $nilai->update(['tingkat_kelas.' . $tingkat_kelas - $i . '.' . 'latihan_soal' => $latihan_soal]);
-                    $nilai->update(['tingkat_kelas.' . $tingkat_kelas - $i . '.' . 'ulangan_harian' => $ulangan_harian]);
-                    $nilai->update(['tingkat_kelas.' . $tingkat_kelas - $i . '.' . 'ulangan_tengah_semester' => $uts]);
-                    $nilai->update(['tingkat_kelas.' . $tingkat_kelas - $i . '.' . 'ulangan_semester' => $us]);
-
+                    $nilai->update([
+                        'latihan_soal.' . ($i + 1) => $latihan_soal,
+                        'ulangan_harian.' . ($i + 1) => $ulangan_harian,
+                        'ulangan_tengah_semester.' . ($i + 1) => $uts,
+                        'ulangan_semester.' . ($i + 1) => $us
+                    ]);
+                    
                     $nilai_akhir = 
                     (array_sum($latihan_soal)/4) * 0.15 + 
                     (array_sum($ulangan_harian)/2) * 0.20 +
                     $uts * 0.25 +
                     $us * 0.40;
 
-                    $siswa->update(['penilaian.' . $tingkat_kelas - $i . '.' . strtolower($mapel->slug) => number_format($nilai_akhir, 2)]);
+                    $siswa->update(['penilaian.' . ($i + 1) . '.' . strtolower($mapel->slug) => number_format($nilai_akhir, 2)]);
                 }
             }
         }

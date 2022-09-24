@@ -24,13 +24,16 @@ class KelasSeeder extends Seeder
             $semester_awal = rand(2000, 2020);
             DB::collection('kelas')->insert([
                 'jurusan' => $jurusan[rand(0,3)],
-                'tahun_ajar' => [$semester_awal, ($semester_awal+3)],
+                'tahun_ajar' => [
+                    'semester_awal' => $semester_awal, 
+                    'semester_akhir' => ($semester_awal+3)
+                ],
                 'ruang' => [
                     'lokasi' => 'Ruang ' . rand(1, 20), 
                     'fasilitas' => $fasilitas_kelas
                 ],
                 'walikelas' => fake()->name(),
-                'siswa' => []
+                'kapasitas' => 0,
             ]);
         }
     }

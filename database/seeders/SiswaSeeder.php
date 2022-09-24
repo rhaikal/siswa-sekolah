@@ -22,7 +22,7 @@ class SiswaSeeder extends Seeder
         for ($i=0; $i < 2; $i++) { 
             $kelas = Kelas::all()->random();
             $jurusan_kelas = $kelas->jurusan;
-            $tingkat_kelas =  rand(10, 12);
+            $semester_siswa =  rand(1, 3);
             for ($j=0; $j < 40; $j++) { 
                 $gender_siswa = $jenis_kelamin[rand(0, 1)];
                 $nama_siswa = fake()->name(($gender_siswa == 'laki-laki') ? 'male' : 'female');
@@ -32,22 +32,18 @@ class SiswaSeeder extends Seeder
                     'nama' => $nama_siswa,
                     'kelas_id' => $kelas->_id,
                     'kelas' => [
-                        'tingkat' => $tingkat_kelas, 
+                        'semester' => $semester_siswa, 
                         'jurusan' => $jurusan_kelas
                     ],
                     'jenis_kelamin' => $gender_siswa,
                     'agama' => $agama[rand(0, 5)],
                     'alamat' => fake()->address(),
                     'foto' => fake()->imageUrl(360, 360, 'person', true, 'siswa', true, 'jpg'),
-                    'penilaian' => [
-                        '10' => null,
-                        '11' => null,
-                        '12' => null
-                    ]
                 ]);
                 $siswa_id = (String)$siswa_id;
                 
-                DB::collection('kelas')->where('_id', $kelas->_id)->push('siswa', ["siswa_id" => $siswa_id, 'nama' => $nama_siswa]);
+                $kelas->push('siswa', ["siswa_id" => $siswa_id, 'nama' => $nama_siswa]);
+                $kelas->increment('kapasitas');
             }
         }
     }
