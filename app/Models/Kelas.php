@@ -23,6 +23,13 @@ class Kelas extends Model
      */
     public $timestamps = false;
     
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['_id'];
+
     public function detailSiswa()
     {
         return $this->hasMany(Siswa::class, 'kelas_id', '_id');
