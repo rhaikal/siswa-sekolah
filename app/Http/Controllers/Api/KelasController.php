@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\KelasCollection;
+use App\Http\Resources\KelasResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -19,19 +21,9 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelas = Kelas::all();
+        $kelas = Kelas::paginate(2);
 
-        $list = [];
-        foreach ($kelas as $kls) {
-            $list[] = [
-                '_id' => $kls->_id,
-                'jurusan' => $kls->jurusan,
-                'tahun_ajar' => $kls->tahun_ajar,
-                'kapasitas' => $kls->kapasitas
-            ];
-        }
-
-        return response()->json($list);
+        return KelasResource::collection($kelas);
     }
 
     /**
@@ -75,7 +67,7 @@ class KelasController extends Controller
         }
         
         if(!isset($validatedData['semester_akhir'])){
-            $data['tahun_ajar']['semester_akhir'] = Carbon::now()->year + 3;
+            $data['tahun_ajar']['semester_akhir'] = $data['tahun_ajar']['semester_awal'] + 3;
         } else {
             $data['tahun_ajar']['semester_akhir'] = $validatedData['semester_akhir'];
         }
@@ -104,7 +96,7 @@ class KelasController extends Controller
 
         $kelas = Kelas::create($data);
 
-        return response()->json($kelas);
+        return new KelasResource($kelas, 'berhasil menambahkan collection kelas baru');
     }
 
     /**
@@ -115,7 +107,7 @@ class KelasController extends Controller
      */
     public function show(Kelas $kelas)
     {
-        return response()->json($kelas);
+        return new KelasResource($kelas, 'berhasil mengambil collection kelas');
     }
 
     /**
@@ -161,6 +153,8 @@ class KelasController extends Controller
 
         if(isset($validatedData['semester_akhir'])){
             $data['tahun_ajar']['semester_akhir'] = $validatedData['semester_akhir'];
+        } else {
+            $data['tahun_ajar']['semester_akhir'] = $data['tahun_ajar']['semester_awal'] + 3;
         }
 
         // data ruang
@@ -169,7 +163,7 @@ class KelasController extends Controller
         }
 
         if(isset($validatedData['fasilitas_ruang'])){
-            if(strpos(',', $validatedData['fasilitas_ruang']) !== false){
+            if(strpos($validatedData['fasilitas_ruang'], ',') !== false){
                 $validatedData['fasilitas_ruang'] = preg_replace('/,\s+/', ',',$validatedData['fasilitas_ruang']);
                 $validatedData['fasilitas_ruang'] = explode(',', $validatedData['fasilitas_ruang']);
             } else {
@@ -186,7 +180,7 @@ class KelasController extends Controller
 
         $kelas->update($data);
 
-        return response()->json($kelas);
+        return new KelasResource($kelas, 'berhasil mengubah collection kelas');
     }
 
     /**
