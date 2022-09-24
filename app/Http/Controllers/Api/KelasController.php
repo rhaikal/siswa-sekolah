@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ErrorResource;
 use App\Http\Resources\KelasCollection;
 use App\Http\Resources\KelasResource;
 use Illuminate\Support\Facades\Validator;
@@ -37,18 +38,14 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'jurusan' => 'required|string|min:0|max:3',
             'semester_awal' => 'integer',
-            'semester_akhir' => 'integer' . (isset($request->semester_awal) ? ('|min:' . $request->semester_awal) : ''),
+            'semester_akhir' => 'integer' . (isset($request->semester_awal) && is_int($request->semester_awal) ? ('|min:' . $request->semester_awal) : ''),
             'lokasi_ruang' => 'string',
             'fasilitas_ruang' => [Rule::excludeIf(!isset($request->lokasi_ruang)), 'string', 'regex:/\w$/'],
             'walikelas' => 'string',
         ]);
         
         if($validator->fails()){
-            return response()->json([
-                'status' => false,
-                'message' => 'Gagal Menambahkan Data Kelas',
-                'errors' => $validator->errors()
-            ]);
+            return new ErrorResource($validator->errors(), 'gagal menambahkan collection kelas');
         }
 
         $validatedData = $validator->validated();
@@ -122,11 +119,15 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'jurusan' => 'string',
             'semester_awal' => 'integer',
-            'semester_akhir' => 'integer|min:' . (isset($request->semester_awal) ? ($request->semester_awal + 1) : ($kelas->tahun_ajar['semester_awal'] + 1)),
+            'semester_akhir' => 'integer|min:' . (isset($request->semester_awal) && is_int($request->semester_awal) ? ($request->semester_awal + 1) : ($kelas->tahun_ajar['semester_awal'] + 1)),
             'lokasi_ruang' => 'string',
             'fasilitas_ruang' => [Rule::excludeIf(!isset($kelas->ruang['lokasi'])), 'string', 'regex:/\w$/'],
             'walikelas' => 'string',
         ]);
+
+        if($validator->fails()){
+            return new ErrorResource($validator->errors(), 'gagal mengubah collection kelas');
+        }
 
         $validatedData = $validator->validated();
 
