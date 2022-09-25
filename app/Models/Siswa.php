@@ -8,7 +8,9 @@ class Siswa extends Model
 {
     protected $connection = 'mongodb';
     protected $collection = 'siswa';
-
+    public $timestamps = false;
+    protected $guarded = ['_id'];
+    
     public function detailKelas()
     {
         return $this->belongsTo(Kelas::class, 'kelas_id');

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\KelasController;
+use App\Http\Controllers\Api\SiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,10 @@ use App\Http\Controllers\Api\KelasController;
 
 Route::apiResource('kelas', KelasController::class)->parameters([
     'kelas' => 'kelas'
+]);
+
+Route::apiResource('siswa', SiswaController::class)->parameters([
+    'siswa' => 'siswa'
 ]);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
