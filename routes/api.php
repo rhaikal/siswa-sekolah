@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\KelasController;
+use App\Http\Controllers\Api\MapelController;
 use App\Http\Controllers\Api\SiswaController;
 
 /*
@@ -27,6 +28,10 @@ Route::delete('kelas/{kelas}/siswa', [KelasController::class, 'removeAllSiswa'])
 
 Route::apiResource('siswa', SiswaController::class)->parameters([
     'siswa' => 'siswa'
+]);
+
+Route::apiResource('mapel', MapelController::class)->parameters([
+    'mapel' => 'mapel'
 ]);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
