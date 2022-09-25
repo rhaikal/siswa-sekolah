@@ -21,6 +21,10 @@ Route::apiResource('kelas', KelasController::class)->parameters([
     'kelas' => 'kelas'
 ]);
 
+Route::put('kelas/{kelas}/siswa/{siswa}', [KelasController::class, 'addSiswa']);
+Route::delete('kelas/{kelas}/siswa/{siswa}', [KelasController::class, 'removeSiswa']);
+Route::delete('kelas/{kelas}/siswa', [KelasController::class, 'removeAllSiswa']);
+
 Route::apiResource('siswa', SiswaController::class)->parameters([
     'siswa' => 'siswa'
 ]);

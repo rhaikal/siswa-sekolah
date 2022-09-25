@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Carbon\Carbon;
+use App\Models\Kelas;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\SiswaResource;
-use App\Models\Kelas;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class SiswaController extends Controller
@@ -58,7 +59,7 @@ class SiswaController extends Controller
 
         $siswa = Siswa::create($validatedData);
 
-        $this->addKelas($kelas, $siswa);
+        $this->addKelas($siswa, $kelas);
 
         return new SiswaResource($siswa, 'berhasil menambahkan collection siswa baru');
     }
@@ -86,7 +87,7 @@ class SiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'nis' => 'string',
             'nama' => 'string',
-            'kelas_id' => 'exists:App\Models\Kelas,_id',
+            'kelas_id' => [Rule::excludeIf($siswa->_id == $request->kelas_id), 'exists:App\Models\Kelas,_id'],
             'jenis_kelamin' => 'in:laki-laki,perempuan',
             'agama' => 'string',
             'alamat' => 'string',
@@ -104,8 +105,11 @@ class SiswaController extends Controller
         
             $validatedData['kelas'] = $this->olahKelas($kelas);
 
-            $this->removeKelas($siswa);
-            $this->addKelas($kelas, $siswa);
+            if(isset($siswa->kelas)){
+                $this->removeKelas($siswa);
+            }
+                
+            $this->addKelas($siswa, $kelas);
         }
         
         $siswa->update($validatedData);
@@ -131,7 +135,7 @@ class SiswaController extends Controller
         ]);
     }
 
-    private function olahKelas(Kelas $kelas)
+    public function olahKelas(Kelas $kelas)
     {
         $tahun = Carbon::now()->year;
         $semester_awal = $kelas->tahun_ajar['semester_awal'];
@@ -150,12 +154,12 @@ class SiswaController extends Controller
         ];
     }
 
-    public function addKelas(Kelas $kelas, Siswa $siswa)
-    {
-        $kelas->push('siswa', ["siswa_id" => $siswa->_id, 'nama' => $siswa->nama]);
+    public function addKelas(Siswa $siswa, Kelas $kelas)
+    {        
+        $kelas->push('siswa', [["siswa_id" => $siswa->_id, 'nama' => $siswa->nama]]);
         $kelas->increment('kapasitas');
         
-        return $kelas;
+        return $siswa;
     }
 
     public function removeKelas(Siswa $siswa)
@@ -164,9 +168,11 @@ class SiswaController extends Controller
         if($siswa->detailKelas->kapasitas == 0){
             $siswa->detailKelas->unset('siswa');
         } else {
+            $siswa_id = $siswa->_id;
+            $siswa_nama = $siswa->nama; 
             $siswa->detailKelas->pull('siswa', [
-                'siswa_id' => $siswa->kelas_id,
-                'nama' => $siswa->nama,
+                'siswa_id' => $siswa_id,
+                'nama' => $siswa_nama,
             ]);
         }
         
