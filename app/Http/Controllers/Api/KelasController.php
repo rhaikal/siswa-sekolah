@@ -39,7 +39,7 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'jurusan' => 'required|string',
             'semester_awal' => 'integer',
-            'semester_akhir' => 'integer' . (isset($request->semester_awal) && is_int($request->semester_awal) ? ('|min:' . $request->semester_awal) : ''),
+            'semester_akhir' => 'integer' . (isset($request->semester_awal) ? ('|min:' . $request->semester_awal) . '|max:' . $request->semester_awal + 3 : ''),
             'lokasi_ruang' => 'string',
             'fasilitas_ruang' => [Rule::excludeIf(!isset($request->lokasi_ruang)), 'string', 'regex:/\w$/'],
             'walikelas' => 'string',
@@ -81,7 +81,7 @@ class KelasController extends Controller
         $validator = Validator::make($request->all(), [
             'jurusan' => 'string',
             'semester_awal' => 'integer',
-            'semester_akhir' => 'integer|min:' . (isset($request->semester_awal) && is_int($request->semester_awal) ? ($request->semester_awal + 1) : ($kelas->tahun_ajar['semester_awal'] + 1)),
+            'semester_akhir' => 'integer|min:' . ((isset($request->semester_awal)) ? ($request->semester_awal + 1) : ($kelas->tahun_ajar['semester_awal'] + 1)) . '|max:' .((isset($request->semester_awal)) ? ($request->semester_awal + 3) : ($kelas->tahun_ajar['semester_akhir'])),
             'lokasi_ruang' => 'string',
             'fasilitas_ruang' => [Rule::excludeIf(!isset($kelas->ruang['lokasi'])), 'string', 'regex:/\w$/'],
             'walikelas' => 'string',
