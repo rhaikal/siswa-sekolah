@@ -48,10 +48,10 @@ class NilaiSeeder extends Seeder
                     $us = rand(70, 100);
 
                     $nilai->update([
-                        'latihan_soal.' . ($i + 1) => $latihan_soal,
-                        'ulangan_harian.' . ($i + 1) => $ulangan_harian,
-                        'ulangan_tengah_semester.' . ($i + 1) => $uts,
-                        'ulangan_semester.' . ($i + 1) => $us
+                        'latihan_soal.' . 'semester_' . ($i + 1) => $latihan_soal,
+                        'ulangan_harian.' . 'semester_' . ($i + 1) => $ulangan_harian,
+                        'ulangan_tengah_semester.' . 'semester_' . ($i + 1) => $uts,
+                        'ulangan_semester.' . 'semester_' . ($i + 1) => $us
                     ]);
                     
                     $nilai_akhir = 
@@ -60,7 +60,11 @@ class NilaiSeeder extends Seeder
                     $uts * 0.25 +
                     $us * 0.40;
 
-                    $siswa->update(['penilaian.' . ($i + 1) . '.' . strtolower($mapel->slug) => number_format($nilai_akhir, 2)]);
+                    $siswa->update(['penilaian.' . 'semester_' . ($i + 1) . '.' .  strtolower($mapel->slug) => [
+                        'mapel' => $mapel->nama,
+                        'nilai' => $nilai_akhir
+                        ]
+                    ]);
                 }
             }
         }

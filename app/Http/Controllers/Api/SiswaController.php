@@ -41,7 +41,6 @@ class SiswaController extends Controller
             'jenis_kelamin' => 'required|in:laki-laki,perempuan',
             'agama' => 'required|string',
             'alamat' => 'required|string',
-            'foto' => 'image'
         ]);
 
         if($validator->fails()){
@@ -91,7 +90,6 @@ class SiswaController extends Controller
             'jenis_kelamin' => 'in:laki-laki,perempuan',
             'agama' => 'string',
             'alamat' => 'string',
-            'foto' => 'image'
         ]);
 
         if($validator->fails()){
@@ -126,6 +124,8 @@ class SiswaController extends Controller
     public function destroy(Siswa $siswa)
     {
         $this->removeKelas($siswa);
+
+        $siswa->nilai()->whereIn('siswa_id', [$siswa->_id])->delete();
 
         $siswa->delete();
 

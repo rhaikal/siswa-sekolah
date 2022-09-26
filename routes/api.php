@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\KelasController;
 use App\Http\Controllers\Api\MapelController;
 use App\Http\Controllers\Api\SiswaController;
+use App\Http\Controllers\Api\NilaiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,10 @@ Route::apiResource('siswa', SiswaController::class)->parameters([
 Route::apiResource('mapel', MapelController::class)->parameters([
     'mapel' => 'mapel'
 ]);
+
+Route::get('nilai', [NilaiController::class, 'index'])->name('nilai.index');
+Route::post('nilai', [NilaiController::class, 'insert'])->name('nilai.insert');
+Route::delete('nilai', [NilaiController::class, 'destroy'])->name('nilai.destroy');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

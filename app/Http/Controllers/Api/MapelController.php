@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Mapel;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ErrorResource;
@@ -94,7 +95,18 @@ class MapelController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Mapel $mapel)
-    {
+    {   
+        $slug = strtolower($mapel->slug);
+        $nilai = $mapel->nilai;
+        foreach($nilai as $nli){
+            $siswa = $nli->siswa;
+            for ($i=0; $i < $siswa->kelas['semester']; $i++) { 
+                $siswa->unset('penilaian.semester_'. ($i + 1) . '.'. $slug);
+            }
+        }
+
+        $mapel->nilai()->whereIn('mapel_id', [$mapel->_id])->delete();
+
         $mapel->delete();
 
         return response()->json([

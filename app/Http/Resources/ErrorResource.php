@@ -6,7 +6,23 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ErrorResource extends JsonResource
 {
-    public function __construct($resource, $message = null)
+    /**
+     * Customize the outgoing response for the resource.
+     *
+     * @param  \Illuminate\Http\Request
+     * @param  \Illuminate\Http\Response
+     * @return void
+     */
+    public function withResponse($request, $response)
+    {
+        /**
+         * Not all prerequisites were met.
+         */
+        $response->setStatusCode(428, 'Precondition Required');
+    }
+
+    
+    public function __construct($resource = null, $message = null)
     {
         parent::__construct($resource);
         $this->message  = $message;

@@ -27,6 +27,13 @@ class Nilai extends Model
      */
     public $timestamps = false;
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['_id'];
+
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);
