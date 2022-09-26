@@ -38,7 +38,6 @@ class SiswaSeeder extends Seeder
                     'jenis_kelamin' => $gender_siswa,
                     'agama' => $agama[rand(0, 5)],
                     'alamat' => fake()->address(),
-                    'foto' => fake()->imageUrl(360, 360, 'person', true, 'siswa', true, 'jpg'),
                 ]);
                 $siswa_id = (String)$siswa_id;
                 

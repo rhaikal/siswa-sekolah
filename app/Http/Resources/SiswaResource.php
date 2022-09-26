@@ -34,11 +34,10 @@ class SiswaResource extends JsonResource
                     'semester' => $this->kelas['semester'],
                     'jurusan' => $this->kelas['jurusan'],
                 ],
+                'jenis_kelamin' => $this->jenis_kelamin,
+                'agama' => $this->agama,
+                'alamat' => $this->alamat,
                 $this->mergeWhen($request->routeIs('siswa.index') == false, [
-                    'jenis_kelamin' => $this->jenis_kelamin,
-                    'agama' => $this->agama,
-                    'alamat' => $this->alamat,
-                    'foto' => $this->when(isset($this->foto), $this->foto),
                     'penilaian' => $this->when(isset($this->penilaian), $this->penilaian)
                 ])
             ]
